@@ -1,0 +1,476 @@
+!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>女性四季色彩测试</title>
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Sans+SC:wght@300;400;500;600&display=swap">
+<style>
+/* ===== 设计令牌 ===== */
+:root{
+  --bg:#F7F5F0;      /* 米白 */
+  --card:#FFFFFF;
+  --line:#E7E4DE;    /* 浅灰分隔线 */
+  --gray-2:#A5A29B;  /* 次级文字 */
+  --gray-3:#76736D;  /* 正文灰 */
+  --ink:#1C1B1A;     /* 近黑 */
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  font-family:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{
+  max-width:26rem;
+  margin:0 auto;
+  padding:2.6rem 1.4rem 3rem;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+button{font-family:inherit;border:none;cursor:pointer;}
+svg{display:block;}
+
+/* ===== 页面切换 ===== */
+.page{display:none;}
+.page.active{display:flex;flex-direction:column;flex:1;animation:pageIn .45s ease both;}
+@keyframes pageIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion: reduce){
+  .page.active{animation:none;}
+}
+
+/* ===== 首页 ===== */
+.home{align-items:center;justify-content:center;text-align:center;}
+.season-marks{display:flex;gap:.55rem;margin-bottom:2.4rem;}
+.season-marks .grp{display:flex;gap:.35rem;}
+.mark{width:.85rem;height:.85rem;border-radius:50%;}
+.mark-s1{background:#F2A6A0;} .mark-s2{background:#F2D98C;}
+.mark-u1{background:#A9BCC9;} .mark-u2{background:#B8A9C9;}
+.mark-a1{background:#A9653B;} .mark-a2{background:#D9A441;}
+.mark-w1{background:#1C1B1A;} .mark-w2{background:#C2457D;}
+.title{font-size:clamp(1.65rem,6vw,2.1rem);font-weight:600;letter-spacing:.02em;line-height:1.4;}
+.subtitle{margin-top:.9rem;font-size:clamp(.95rem,3.6vw,1.05rem);font-weight:300;color:var(--gray-3);line-height:1.6;}
+.btn-start{
+  margin-top:2.8rem;
+  width:100%;max-width:17rem;
+  padding:1.05rem 2rem;
+  background:var(--ink);
+  color:#fff;
+  font-size:1.02rem;
+  font-weight:500;
+  letter-spacing:.12em;
+  border-radius:var(--radius);
+  transition:opacity .2s ease, transform .15s ease;
+}
+.btn-start:hover{opacity:.88;}
+.btn-start:active{transform:scale(.97);}
+.home-note{margin-top:2.2rem;font-size:.75rem;color:var(--gray-2);letter-spacing:.06em;}
+
+/* ===== 答题页 ===== */
+.quiz-head{margin-bottom:2.2rem;}
+.quiz-meta{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.7rem;}
+.quiz-count{font-size:.8rem;color:var(--gray-2);letter-spacing:.08em;}
+.quiz-count b{font-weight:600;color:var(--ink);}
+.progress-track{height:2px;background:var(--line);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;width:10%;background:var(--ink);border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1);}
+.question{
+  font-size:1.28rem;font-weight:500;line-height:1.5;
+  margin-bottom:1.8rem;letter-spacing:.01em;
+}
+.option-list{display:flex;flex-direction:column;gap:.8rem;}
+.option-item{
+  width:100%;
+  text-align:left;
+  padding:1.05rem 1.15rem;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  font-size:.98rem;
+  line-height:1.55;
+  color:var(--gray-3);
+  transition:border-color .18s ease, color .18s ease, transform .12s ease, box-shadow .18s ease;
+}
+.option-item:hover{border-color:#C9C5BC;color:var(--ink);}
+.option-item:active{transform:scale(.975);}
+.option-item.picking{border-color:var(--ink);color:var(--ink);box-shadow:0 4px 14px rgba(28,27,26,.08);}
+.option-enter{animation:optIn .32s ease both;}
+@keyframes optIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.quiz-exit{animation:quizOut .18s ease both;}
+@keyframes quizOut{from{opacity:1;transform:none;}to{opacity:0;transform:translateY(-8px);}}
+@media (prefers-reduced-motion: reduce){
+  .option-enter,.quiz-exit{animation:none;}
+}
+
+/* ===== 结果页 ===== */
+.result-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:2rem 1.5rem 1.8rem;
+}
+.result-eyebrow{text-align:center;font-size:.78rem;letter-spacing:.14em;color:var(--gray-2);}
+.result-title{text-align:center;font-size:1.65rem;font-weight:600;margin-top:.55rem;letter-spacing:.03em;}
+.result-desc{text-align:center;font-size:.9rem;color:var(--gray-3);line-height:1.7;margin-top:.8rem;}
+.result-divider{height:1px;background:var(--line);margin:1.6rem 0;}
+
+/* 推荐条目 */
+.rec-item{display:flex;gap:.9rem;align-items:flex-start;}
+.rec-item + .rec-item{margin-top:1.25rem;}
+.rec-icon{
+  flex:none;width:2.4rem;height:2.4rem;border-radius:12px;
+  background:var(--bg);color:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+}
+.rec-icon svg{width:1.25rem;height:1.25rem;}
+.rec-body{flex:1;min-width:0;}
+.rec-label{font-size:.8rem;color:var(--gray-2);letter-spacing:.1em;margin-bottom:.3rem;}
+.rec-text{font-size:.95rem;line-height:1.7;color:var(--gray-3);}
+
+/* 配色色卡 */
+.palette-block{margin-top:1.6rem;}
+.palette-title{font-size:.8rem;color:var(--gray-2);letter-spacing:.1em;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem;}
+.palette-title::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:var(--ink);}
+.palette-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;}
+.swatch{border-radius:10px;overflow:hidden;border:1px solid rgba(28,27,26,.06);}
+.swatch-chip{height:3.2rem;}
+.swatch-name{font-size:.66rem;color:var(--gray-3);text-align:center;padding:.45rem .2rem;background:var(--card);line-height:1.3;}
+
+/* 重新测试 */
+.btn-restart{
+  width:100%;
+  margin-top:1.6rem;
+  padding:1rem 2rem;
+  background:var(--ink);
+  color:#fff;
+  font-size:.98rem;
+  font-weight:500;
+  letter-spacing:.12em;
+  border-radius:var(--radius);
+  transition:opacity .2s ease, transform .15s ease;
+}
+.btn-restart:hover{opacity:.88;}
+.btn-restart:active{transform:scale(.97);}
+.result-foot{text-align:center;margin-top:1.4rem;font-size:.75rem;color:var(--gray-2);letter-spacing:.05em;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 视图：首页 ===== -->
+  <section id="homePage" class="page home active">
+    <div class="season-marks" aria-hidden="true">
+      <div class="grp"><span class="mark mark-s1"></span><span class="mark mark-s2"></span></div>
+      <div class="grp"><span class="mark mark-u1"></span><span class="mark mark-u2"></span></div>
+      <div class="grp"><span class="mark mark-a1"></span><span class="mark mark-a2"></span></div>
+      <div class="grp"><span class="mark mark-w1"></span><span class="mark mark-w2"></span></div>
+    </div>
+    <h1 class="title">测测你是哪种四季色彩型人</h1>
+    <p class="subtitle">10道题，找到最适合你的穿搭&amp;妆容色系</p>
+    <button class="btn-start" id="btnStart" type="button">开始测试</button>
+    <p class="home-note">四季色彩理论 · 全程本地运行</p>
+  </section>
+
+  <!-- ===== 视图：答题 ===== -->
+  <section id="quizPage" class="page">
+    <div class="quiz-head">
+      <div class="quiz-meta">
+        <span class="quiz-count">题目 <b id="curNum">1</b> / 10</span>
+        <span class="quiz-count"><b id="curPct">10</b>%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <h2 class="question" id="questionText"></h2>
+    <div class="option-list" id="optionList"></div>
+  </section>
+
+  <!-- ===== 视图：结果 ===== -->
+  <section id="resultPage" class="page">
+    <div class="result-card">
+      <p class="result-eyebrow">YOUR COLOR SEASON</p>
+      <h2 class="result-title" id="resultTitle"></h2>
+      <p class="result-desc" id="resultDesc"></p>
+      <div class="result-divider"></div>
+
+      <div class="rec-item">
+        <span class="rec-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8.5 3.5h7v6a3.5 3.5 0 0 1-7 0v-6z"/>
+            <path d="M8.5 6h7"/>
+            <path d="M9.5 13l.8 8a1 1 0 0 0 1 .9h1.4a1 1 0 0 0 1-.9l.8-8"/>
+          </svg>
+        </span>
+        <div class="rec-body">
+          <p class="rec-label">口红色号</p>
+          <p class="rec-text" id="resLip"></p>
+        </div>
+      </div>
+
+      <div class="rec-item">
+        <span class="rec-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="8" width="18" height="11" rx="2"/>
+            <circle cx="8.2" cy="12" r="1.7"/>
+            <circle cx="12" cy="12" r="1.7"/>
+            <circle cx="15.8" cy="12" r="1.7"/>
+            <path d="M6 19l1-3M18 19l-1-3"/>
+          </svg>
+        </span>
+        <div class="rec-body">
+          <p class="rec-label">眼影色调</p>
+          <p class="rec-text" id="resEye"></p>
+        </div>
+      </div>
+
+      <div class="rec-item">
+        <span class="rec-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 3.5 4 6.5l2 4 2-1.2V20.5h8V9.3l2 1.2 2-4-5-3a3.2 3.2 0 0 0-4 0z"/>
+          </svg>
+        </span>
+        <div class="rec-body">
+          <p class="rec-label">服装色系</p>
+          <p class="rec-text" id="resCloth"></p>
+        </div>
+      </div>
+
+      <div class="palette-block">
+        <p class="palette-title">你的专属配色色卡</p>
+        <div class="palette-grid" id="paletteGrid"></div>
+      </div>
+    </div>
+
+    <button class="btn-restart" id="btnRestart" type="button">重新测试</button>
+    <p class="result-foot">测试结果仅供风格参考</p>
+  </section>
+
+</div>
+
+<script>
+/* ===== 数据：题目 ===== */
+var questionList = [
+  { q: "你的原生肤色偏向？", opts: [
+    { text: "偏暖，透着黄调，晒后容易变成暖小麦色", score: "spring" },
+    { text: "偏冷，粉调白皙，晒后容易泛红不易晒黑", score: "summer" },
+    { text: "深暖黄调，肤色厚重，晒后迅速变成深黄褐色", score: "autumn" },
+    { text: "冷调偏白或者冷调深肤色，黑白对比强烈", score: "winter" }
+  ]},
+  { q: "手腕内侧血管颜色大多是？", opts: [
+    { text: "偏绿、橄榄色为主", score: "spring" },
+    { text: "蓝紫与绿色混杂", score: "summer" },
+    { text: "明显橄榄绿，黄褐色感", score: "autumn" },
+    { text: "明显蓝紫色", score: "winter" }
+  ]},
+  { q: "戴金色 vs 银色首饰，哪种更衬你气色？", opts: [
+    { text: "浅金色、淡金更显柔和好看", score: "spring" },
+    { text: "哑光银、浅银色更合适", score: "summer" },
+    { text: "复古厚重黄铜金、古铜金非常适合", score: "autumn" },
+    { text: "冷亮银色、铂金首饰光彩突出", score: "winter" }
+  ]},
+  { q: "你的发色观感是？", opts: [
+    { text: "浅棕、茶褐色，整体发色偏浅透亮", score: "spring" },
+    { text: "灰棕、柔和黑色，不会很黑发亮", score: "summer" },
+    { text: "深棕、焦糖棕，带有黄褐色质感", score: "autumn" },
+    { text: "乌黑浓亮，发色很深，黑白对比强", score: "winter" }
+  ]},
+  { q: "你的瞳孔颜色是？", opts: [
+    { text: "浅茶色、浅琥珀，通透清亮", score: "spring" },
+    { text: "灰褐、灰调浅棕，柔和朦胧", score: "summer" },
+    { text: "深琥珀、黄褐色，温暖厚重", score: "autumn" },
+    { text: "深黑、深咖啡，黑白分明", score: "winter" }
+  ]},
+  { q: "穿上米黄色衣服，你的状态是？", opts: [
+    { text: "气色提亮，整个人显得鲜活元气", score: "spring" },
+    { text: "容易显得脸色发黄暗沉", score: "summer" },
+    { text: "很适配，温暖高级有质感", score: "autumn" },
+    { text: "脸色发灰，没有精神", score: "winter" }
+  ]},
+  { q: "穿上灰蓝色衣服，你的状态是？", opts: [
+    { text: "脸色容易黯淡，不够出彩", score: "spring" },
+    { text: "非常柔和显气质，整个人很干净", score: "summer" },
+    { text: "显得沉闷憔悴", score: "autumn" },
+    { text: "普通，不如高饱和冷色惊艳", score: "winter" }
+  ]},
+  { q: "色彩偏好上你更适合哪一类氛围？", opts: [
+    { text: "明亮轻快、清新的浅暖色系", score: "spring" },
+    { text: "低饱和度灰调冷色系，淡雅柔和", score: "summer" },
+    { text: "浓郁厚重、复古大地暖色系", score: "autumn" },
+    { text: "高饱和度、强烈干净的冷艳色系", score: "winter" }
+  ]},
+  { q: "如果选红色系，哪一类红色衬脸？", opts: [
+    { text: "蜜桃红、橘调浅红", score: "spring" },
+    { text: "玫瑰豆沙、灰调玫瑰红", score: "summer" },
+    { text: "铁锈红、砖红，土调红", score: "autumn" },
+    { text: "正红、蓝调冷艳大红", score: "winter" }
+  ]},
+  { q: "整体个人气质倾向？", opts: [
+    { text: "元气明媚、鲜活少女感", score: "spring" },
+    { text: "温婉沉静、清冷柔和感", score: "summer" },
+    { text: "成熟复古、温润大气感", score: "autumn" },
+    { text: "锐利冷艳、强烈醒目感", score: "winter" }
+  ]}
+];
+
+/* ===== 数据：结果 ===== */
+var resultData = {
+  spring: {
+    title: "春季浅暖型",
+    desc: "元气明媚，像初春的暖阳——轻盈、透亮、充满生机。",
+    lip: "橘调蜜桃、西柚色、浅珊瑚红；避开深姨妈色和冷调紫调重的口红。",
+    eye: "杏色、浅金、蜜桃橘、浅黄绿；清新透亮的浅暖珠光，拒绝浓重灰黑烟熏。",
+    cloth: "奶油白、浅杏、蜜桃、薄荷浅绿、浅鹅黄；适合明亮轻盈的暖色调，避开暗沉厚重的大地深色。",
+    palette: [
+      { c: "#F7F3EA", n: "奶油白" }, { c: "#F5C9A6", n: "浅杏" },
+      { c: "#F2A6A0", n: "蜜桃粉" }, { c: "#F2D98C", n: "浅鹅黄" },
+      { c: "#BFD8C2", n: "薄荷绿" }, { c: "#A9C4D9", n: "浅天蓝" },
+      { c: "#E8A0A8", n: "珊瑚粉" }, { c: "#D9B38C", n: "浅驼" }
+    ]
+  },
+  summer: {
+    title: "夏季冷柔型",
+    desc: "温婉清冷，像夏夜的月光——柔和、朦胧、自带仙气。",
+    lip: "灰调玫瑰、豆沙、冷调树莓；避开浓重橘调和土棕口红。",
+    eye: "灰紫、灰蓝、冷调藕粉、雾感冷灰；低饱和哑光冷系，拒绝金灿灿的暖珠光。",
+    cloth: "雾感灰蓝、薰衣草紫、冷调米灰、雾霾粉；柔和灰调冷色系，避开高饱和暖橘色。",
+    palette: [
+      { c: "#EDEAE6", n: "冷调米白" }, { c: "#A9BCC9", n: "雾霾蓝" },
+      { c: "#B8A9C9", n: "薰衣草紫" }, { c: "#E3C5C8", n: "冷调粉" },
+      { c: "#BFC2C9", n: "雾灰" }, { c: "#C99A9A", n: "豆沙粉" },
+      { c: "#8FA3B0", n: "灰蓝" }, { c: "#D9D2C9", n: "冷米灰" }
+    ]
+  },
+  autumn: {
+    title: "秋季深暖型",
+    desc: "复古大气，像深秋的枫林——浓郁、厚重、耐人寻味。",
+    lip: "砖红、土橘、焦糖、枫叶红；避开冷粉和浅蜜桃亮色系口红。",
+    eye: "古铜、金棕、橄榄绿、焦糖大地；复古暖调珠光，拒绝冷灰蓝与冷紫。",
+    cloth: "驼色、姜黄、橄榄绿、铁锈色、深焦糖；浓郁复古大地色系，避开冷调浅冰色。",
+    palette: [
+      { c: "#F0E4D3", n: "米驼" }, { c: "#B98A5A", n: "驼色" },
+      { c: "#A9653B", n: "焦糖棕" }, { c: "#8A8B5E", n: "橄榄绿" },
+      { c: "#D9A441", n: "姜黄" }, { c: "#B55A3B", n: "铁锈红" },
+      { c: "#6E4A32", n: "深棕" }, { c: "#C96F4A", n: "南瓜橘" }
+    ]
+  },
+  winter: {
+    title: "冬季冷艳型",
+    desc: "锐利冷艳，像冬日的雪光——高对比、强气场、一眼难忘。",
+    lip: "蓝调正红、浆果梅子色、冷调酒红；避开土橘与暖蜜桃。",
+    eye: "冷调银灰、冷紫、深黑、宝蓝；高对比冷艳配色，拒绝暖调古铜金。",
+    cloth: "冷调纯白、正黑、宝蓝、酒红、冷艳玫红；高饱和度干净冷色，避开浑浊发黄的米褐色。",
+    palette: [
+      { c: "#FFFFFF", n: "纯白" }, { c: "#1A1A1A", n: "正黑" },
+      { c: "#2B4A8F", n: "宝蓝" }, { c: "#7E2A3B", n: "酒红" },
+      { c: "#C2457D", n: "玫红" }, { c: "#8B8D94", n: "冷灰" },
+      { c: "#E1E3E8", n: "冰白" }, { c: "#4A6FA5", n: "冷蓝" }
+    ]
+  }
+};
+
+/* ===== 状态与工具 ===== */
+var currentIndex = 0;
+var scoreMap = { spring: 0, summer: 0, autumn: 0, winter: 0 };
+var answering = false;
+
+function showPage(id) {
+  var pages = document.querySelectorAll(".page");
+  for (var i = 0; i < pages.length; i++) pages[i].classList.remove("active");
+  document.getElementById(id).classList.add("active");
+}
+
+/* ===== 首页 ===== */
+document.getElementById("btnStart").addEventListener("click", function () {
+  currentIndex = 0;
+  scoreMap = { spring: 0, summer: 0, autumn: 0, winter: 0 };
+  renderQuestion();
+  showPage("quizPage");
+});
+
+/* ===== 答题 ===== */
+function renderQuestion() {
+  var q = questionList[currentIndex];
+  document.getElementById("curNum").textContent = currentIndex + 1;
+  document.getElementById("curPct").textContent = (currentIndex + 1) * 10;
+  document.getElementById("progressFill").style.width = ((currentIndex + 1) * 10) + "%";
+  document.getElementById("questionText").textContent = q.q;
+
+  var list = document.getElementById("optionList");
+  list.innerHTML = "";
+  var n = q.opts.length;
+  for (var i = 0; i < n; i++) {
+    (function (opt, idx) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "option-item option-enter";
+      btn.style.animationDelay = (idx * 55) + "ms";
+      btn.textContent = opt.text;
+      btn.addEventListener("click", function () {
+        if (answering) return;
+        answering = true;
+        btn.classList.add("picking");
+        setTimeout(function () { selectAnswer(opt.score); }, 160);
+      });
+      list.appendChild(btn);
+    })(q.opts[i], i);
+  }
+}
+
+function selectAnswer(type) {
+  scoreMap[type] += 1;
+  currentIndex += 1;
+  answering = false;
+  if (currentIndex >= questionList.length) {
+    calcResult();
+    return;
+  }
+  renderQuestion();
+}
+
+/* ===== 结果 ===== */
+function calcResult() {
+  var keys = ["spring", "summer", "autumn", "winter"];
+  var maxKey = keys[0];
+  var maxVal = -1;
+  for (var i = 0; i < keys.length; i++) {
+    if (scoreMap[keys[i]] > maxVal) {
+      maxVal = scoreMap[keys[i]];
+      maxKey = keys[i];
+    }
+  }
+  var res = resultData[maxKey];
+  document.getElementById("resultTitle").textContent = res.title;
+  document.getElementById("resultDesc").textContent = res.desc;
+  document.getElementById("resLip").textContent = res.lip;
+  document.getElementById("resEye").textContent = res.eye;
+  document.getElementById("resCloth").textContent = res.cloth;
+
+  var grid = document.getElementById("paletteGrid");
+  grid.innerHTML = "";
+  var p = res.palette;
+  for (var i = 0; i < p.length; i++) {
+    var box = document.createElement("div");
+    box.className = "swatch";
+    var chip = document.createElement("div");
+    chip.className = "swatch-chip";
+    chip.style.background = p[i].c;
+    var name = document.createElement("div");
+    name.className = "swatch-name";
+    name.textContent = p[i].n;
+    box.appendChild(chip);
+    box.appendChild(name);
+    grid.appendChild(box);
+  }
+  showPage("resultPage");
+}
+
+/* ===== 重新测试 ===== */
+document.getElementById("btnRestart").addEventListener("click", function () {
+  showPage("homePage");
+});
+</script>
+</body>
+</html>
